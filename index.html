@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Community Forest &amp; Rare Birds · เกมป่าชุมชนกับนกหายาก</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Domine:wght@400..700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 /* W12 เกมป่าชุมชนกับนกหายาก — styles (base copied from W11, forest palette) */
 :root {
@@ -348,6 +348,30 @@ table.qtab th { background: var(--surface2); }
 @media print { .page-break { break-before: page; } }
 .sheet-table td.l { white-space: nowrap; }
 html[lang="en"] .sess.active .t b::after { content: "  • open"; }
+/* answers in the Discussion tab (PD, 18 Oct 2026) */
+.ans-ta { width: 100%; min-height: 3.2rem; margin: .35rem 0 .2rem; padding: .45rem .6rem; border: 1px solid var(--line2); border-radius: 8px; background: var(--surface); color: var(--ink); font: inherit; font-size: .95rem; line-height: 1.5; resize: vertical; }
+.ans-ta:focus { outline: 2px solid var(--pri); outline-offset: 1px; }
+td.ta-cell { padding: .2rem !important; vertical-align: top; }
+td.ta-cell .ans-ta { margin: 0; min-height: 2.6rem; font-size: .88rem; }
+.part-off { opacity: .6; }
+.ans-out { border-left: 2.5pt solid #999; padding: 1mm 3mm; margin: 1mm 0 2mm; white-space: normal; }
+.ansp table.qtab td.l { text-align: left; vertical-align: top; height: auto; }
+.ansp ol.dql > li.dq { break-inside: auto; }
+details.card > summary { cursor: pointer; }
+/* brief slides */
+.bstage { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 10px; background: #1F3A2B; }
+.bstage:fullscreen { border-radius: 0; background: #111; }
+.bslide { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; box-sizing: border-box; overflow: hidden; }
+.bslide h1, .bslide h2, .bslide h3, .bslide p, .bslide ul, .bslide table { margin: 0; }
+.bslide h1 { line-height: 1.1; } .bslide h2 { line-height: 1.15; } .bslide h3 { line-height: 1.2; } .bslide p { line-height: 1.4; }
+.bslide ul { padding-left: 1.2em; } .bslide li { margin: 0 0 .2em; }
+.bslide table.btab { border-collapse: collapse; width: 100%; align-self: start; color: inherit; }
+.bslide table.btab th, .bslide table.btab td { border-bottom: 2px solid #C9D8CC; padding: 14px 18px; background: none; }
+.bslide table.btab th { color: #1F3A2B; font-weight: 700; }
+@page brief { size: A4 landscape; margin: 10mm; }
+.bprint { page: brief; height: 588px; overflow: hidden; break-after: page; break-inside: avoid; }
+.bprint-in .bslide { position: relative; transform: none; zoom: .5453; }
+.bprint .bslide { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
 </style>
 </head>
@@ -596,8 +620,8 @@ html[lang="en"] .sess.active .t b::after { content: "  • open"; }
   }
   function locale() { return L('th-TH', 'en-GB'); }
 
-  function TABS() { return L(['เตรียมเกม', 'เล่นรอบปี', 'ใบบันทึก', 'สรุปผล', 'คำถามอภิปราย', 'ดาวน์โหลดผล', 'วิธีเล่น'],
-    ['Setup', 'Play a year', 'Record sheets', 'Results', 'Discussion', 'Downloads', 'How to play']); }
+  function TABS() { return L(['เตรียมเกม', 'เล่นรอบปี', 'ใบบันทึก', 'สรุปผล', 'คำถามอภิปราย', 'ดาวน์โหลดผล', 'วิธีเล่น', 'สไลด์สรุป'],
+    ['Setup', 'Play a year', 'Record sheets', 'Results', 'Discussion', 'Downloads', 'How to play', 'Brief']); }
   function SCEN(k) {
     return ({ S1: L('สถานการณ์ที่ 1: ต่างคนต่างตัดสินใจ (ไม่มีการพูดคุยกัน)', 'Scenario 1: each decides alone (no talking)'),
       S2: L('สถานการณ์ที่ 2: พูดคุยและวางแผนร่วมกัน', 'Scenario 2: talk and plan together') })[k] || '';
@@ -706,7 +730,7 @@ html[lang="en"] .sess.active .t b::after { content: "  • open"; }
     }).join('');
     killCharts();
     var P = $('#panel'); P.onclick = null; P.oninput = null; P.onchange = null;
-    [renderSetup, renderRound, renderSheets, renderSummary, renderDiscuss, renderDownloads, renderHowto][store.tab](P, s);
+    [renderSetup, renderRound, renderSheets, renderSummary, renderDiscuss, renderDownloads, renderHowto, renderBrief][store.tab](P, s);
   }
   $('#tabs').addEventListener('click', function (e) { var b = e.target.closest('[data-tab]'); if (!b) return; store.tab = +b.dataset.tab; save(); render(); window.scrollTo(0, 0); });
 
@@ -1101,55 +1125,268 @@ html[lang="en"] .sess.active .t b::after { content: "  • open"; }
   function tx(o) { return L(o.th, o.en); }
   function citeA10(n) { return L('ภาคผนวกที่ 10 ข้อ ' + n, 'Textbook appendix 10, item ' + n + ' (translated)'); }
   function cite8(t) { return L('บทที่ 8 หัวข้อ 8.4.3 · ' + t[0], 'Textbook ch. 8.4.3 · ' + t[1] + ' (translated)'); }
-  function qTable(t, print) {
-    var n = t.rows || 5, cols = t.head.length;
+  // a quoted textbook text; raw = text already chosen by language
+  function tbq(o, cite, raw) { return '<blockquote class="tb">' + (raw ? o : tx(o)) + '<cite>' + cite + '</cite></blockquote>'; }
+
+  /* answers (PD, 18 Oct 2026): students type their answers under each question, choose the scenario(s) they
+     played, and print the answer sheet to PDF for MyCourseVille. Stored in the game: s.answers =
+     { group, members, played: 'S1' | 'S2' | 'both', q: { '<id>': text } }. Part A = after scenario 1
+     (questions 1–7), part B = after the game (questions 9.1–9.7). mode: 'web' (inputs), 'blank' (worksheet
+     with empty lines), 'ans' (answer sheet with the typed answers). */
+  function answersOf(s) {
+    var a = s.answers && typeof s.answers === 'object' ? s.answers : {};
+    if (typeof a.q !== 'object' || !a.q) a.q = {};
+    if (['S1', 'S2', 'both'].indexOf(a.played) < 0) a.played = s.scenario === 'S2' ? 'both' : 'S1';
+    a.group = a.group || ''; a.members = a.members || '';
+    s.answers = a; return a;
+  }
+  function partOn(a, part) { return part === 'A' ? a.played !== 'S2' : a.played !== 'S1'; }
+  function ansText(v) { return v ? esc(v).replace(/\n/g, '<br>') : '<span class="muted">–</span>'; }
+  function field(id, rows, A, mode, ph) {
+    if (mode === 'web') return '<textarea class="ans-ta" data-ans="' + id + '" rows="' + rows + '"' + (ph ? ' placeholder="' + esc(ph) + '"' : '') + '>' + esc(A[id] || '') + '</textarea>';
+    if (mode === 'ans') return '<div class="ans-out">' + ansText(A[id]) + '</div>';
+    return '';
+  }
+  function qTable(q, mode, A) {
+    var t = q.table, n = t.rows || 5, cols = t.head.length, yearCol = cols === 3;
     var cg = '<colgroup>' + t.w.map(function (w) { return '<col style="width:' + w + '%">'; }).join('') + '</colgroup>';
     var body = '';
-    for (var i = 0; i < n; i++) body += '<tr>' + t.head.map(function (_, j) { return '<td' + (print ? ' style="height:' + (cols === 3 ? 15 : 11) + 'mm"' : '') + '>' + (j === 0 && cols === 3 ? (i + 1) : j === 2 && t.cell3 ? '<span class="small">' + tx(t.cell3) + '</span>' : '') + '</td>'; }).join('') + '</tr>';
-    return '<table class="sheet-table qtab">' + cg + '<thead><tr>' + t.head.map(function (h) { return '<th>' + tx(h) + '</th>'; }).join('') + '</tr></thead><tbody>' + body + '</tbody></table>';
+    for (var i = 0; i < n; i++) body += '<tr>' + t.head.map(function (_, j) {
+      if (yearCol && j === 0) return '<td>' + (i + 1) + '</td>';
+      var id = q.n + '_r' + (i + 1) + 'c' + (j + 1), ph = j === 2 && t.cell3 ? tx(t.cell3).replace('<br>', ' / ') : '';
+      if (mode === 'web') return '<td class="ta-cell">' + field(id, 2, A, mode, ph) + '</td>';
+      if (mode === 'ans') return '<td class="l">' + (A[id] ? esc(A[id]).replace(/\n/g, '<br>') : '') + '</td>';
+      return '<td style="height:' + (yearCol ? 15 : 11) + 'mm">' + (j === 2 && t.cell3 ? '<span class="small">' + tx(t.cell3) + '</span>' : '') + '</td>';
+    }).join('') + '</tr>';
+    return '<div class="scroll-x"><table class="sheet-table qtab">' + cg + '<thead><tr>' + t.head.map(function (h) { return '<th>' + tx(h) + '</th>'; }).join('') + '</tr></thead><tbody>' + body + '</tbody></table></div>';
   }
   function ansLines(n) { return '<div class="ans-lines">' + new Array(n + 1).join('<div class="ans"></div>') + '</div>'; }
-  function qItem(q, print) {
+  function qItem(q, mode, A) {
     var h = '<li class="dq" value="' + parseInt(q.n.split('.').pop(), 10) + '"><div>' + tx(q) + '</div>';
-    if (q.sub) h += '<ol type="a" class="dsub">' + q.sub.map(function (x) { return '<li>' + tx(x) + (print ? ansLines(q.lines || 2) : '') + '</li>'; }).join('') + '</ol>';
+    if (q.sub) h += '<ol type="a" class="dsub">' + q.sub.map(function (x, i) { var id = q.n + 'abc'[i]; return '<li>' + tx(x) + (mode === 'blank' ? ansLines(q.lines || 2) : field(id, 2, A, mode)) + '</li>'; }).join('') + '</ol>';
     if (q.list) h += '<ul>' + q.list.map(function (x) { return '<li>' + tx(x) + '</li>'; }).join('') + '</ul>';
     if (q.after) h += '<div>' + tx(q.after) + '</div>';
     if (q.note) h += '<div class="small"><b>' + tx(q.note) + '</b></div>';
-    if (q.table) h += qTable(q.table, print);
-    if (print && q.box) h += '<div class="ans-box" style="height:' + q.box + 'mm"></div>';
-    if (print && q.lines && !q.sub) h += ansLines(q.lines);
+    if (q.table) h += qTable(q, mode, A);
+    if (!q.sub && !q.table) {
+      if (mode === 'blank') h += q.box ? '<div class="ans-box" style="height:' + q.box + 'mm"></div>' : ansLines(q.lines || 3);
+      else h += field(q.n, q.box ? 6 : Math.max(3, (q.lines || 3) + 1), A, mode, q.box ? L('อธิบายแผนภาพเป็นข้อความ (องค์ประกอบ → กริยา → องค์ประกอบ) หรือวาดลงกระดาษแล้วแนบรูปในระบบ', 'Describe the diagram as text (component → verb → component), or draw it on paper and attach a photo in the system') : '');
+    }
     return h + '</li>';
   }
-  function discussBody(s, print) {
-    return '<h2>' + L('เกมป่าชุมชนกับนกหายาก: คำถามอภิปราย', 'Community Forest &amp; Rare Birds: discussion questions') + '</h2>' +
-      (print ? '<p>' + L('กลุ่ม ........................ รหัสสมาชิก ...................................................................................', 'Group ........................ Member codes ...................................................................................') + '</p>' :
-        '<p class="small muted">' + L('ข้อความยกจากตำรา 2303564 แบบจำลองเพื่อการจัดการทรัพยากรธรรมชาติ (ภาคผนวกที่ 10 และบทที่ 8 หัวข้อ 8.4.3) ตามต้นฉบับ กด 🖨 พิมพ์ใบงาน เพื่อพิมพ์คำถามพร้อมที่ว่างสำหรับเขียนคำตอบ',
-          'Texts from the textbook 2303564 Models for Natural Resource Management (appendix 10 and chapter 8.4.3), translated into English for this app. Press 🖨 Print worksheet for the questions with space for the answers.') + '</p>') +
-      '<h3>' + L('ก. หลังสถานการณ์ที่ 1 (คำถามสำหรับกลุ่มย่อย)', 'A. After scenario 1 (questions for each group)') + '</h3>' +
-      '<p>' + tx(DTXT.intro1) + (print ? '' : ' <span class="small muted">(' + citeA10('1–7') + ')</span>') + '</p>' +
-      '<ol class="dql">' + DQ1.map(function (q) { return qItem(q, print); }).join('') + '</ol>' +
-      '<p class="small muted">' + L('ข้อ 8 ในตำรา (ทดลองแผนในโปรแกรม ReHab แล้วบันทึกผล): ใช้เครื่องนี้แทน ทำสถานการณ์ที่ 2 ในแท็บเตรียมเกม แล้วพิมพ์ผลจากแท็บใบบันทึก (ข้อความนี้เขียนขึ้นสำหรับเครื่องนี้)',
-        'Item 8 of the textbook (test the plan in the ReHab program and record the results): use this app instead — play scenario 2 from the Setup tab and print the results from the Record sheets tab (note written for this app).') + '</p>' +
-      '<h3' + (print ? ' class="page-break"' : '') + '>' + L('ข. หลังเล่นเกม (ข้อ 9 ', 'B. After the game (item 9: ') + tx(DTXT.h9) + ')</h3>' +
-      (print ? '' : '<p class="small muted">' + citeA10('9') + '</p>') +
-      '<ol class="dql">' + DQ9.map(function (q) { return qItem(q, print); }).join('') + '</ol>' +
-      (print ? '' :
-        '<h3>' + L('ค. สำหรับผู้สอน: อภิปรายและสรุปการใช้เกม', 'C. For the teacher: discussion and debriefing') + '</h3>' +
-        '<h4>' + L('การอภิปรายแลกเปลี่ยนเรียนรู้เพิ่มเติม', 'Further discussion') + '</h4>' + tbq(DTXT.disc, cite8(['การอภิปรายแลกเปลี่ยนเรียนรู้เพิ่มเติม', 'further discussion'])) +
-        '<h4>' + L('การสรุปผลการใช้เกม (debriefing)', 'Debriefing') + '</h4>' + tbq(DTXT.debrief, cite8(['การสรุปผลการใช้เกม', 'debriefing'])) +
-        tbq('<b>' + L('สถานการณ์จำลองที่ 1', 'Scenario 1') + '</b><br>' + tx(DTXT.s1), cite8(['สถานการณ์จำลองที่ 1', 'scenario 1']), true) +
-        tbq('<b>' + L('สถานการณ์จำลองที่ 2', 'Scenario 2') + '</b><br>' + tx(DTXT.s2), cite8(['สถานการณ์จำลองที่ 2', 'scenario 2']), true) +
-        '<h4>' + L('วิธีการอื่น ๆ ที่เป็นไปได้ในการจัดการทรัพยากรธรรมชาติในเกม', 'Other possible ways to manage the natural resources in the game') + '</h4>' +
-        tbq(tx(DTXT.alt) + '<ul>' + DTXT.altList.map(function (x) { return '<li>' + tx(x) + '</li>'; }).join('') + '</ul>', cite8(['วิธีการอื่น ๆ ที่เป็นไปได้', 'other possible ways']), true) +
-        '<p class="small muted">' + L('ทดลองแนวทางเหล่านี้ได้ในเครื่องนี้: ลดแรงงาน (กรอก 0 = อยู่บ้าน) แบ่งช่อง เขตอนุรักษ์และเขตกันชน และส่วนขยายในแท็บเตรียมเกม (ลาดตระเวน อาชีพเสริม ปลูกป่า) ส่วนการเพาะพันธุ์นกไม่มีในเครื่องนี้',
-          'Several of these can be tried in this app: less labour (type 0 = stays home), sharing cells, reserves and buffer zones, and the extensions in the Setup tab (patrols, side jobs, replanting). Bird breeding is not in this app.') + '</p>' +
-        '<h4>' + L('การวิเคราะห์ผลการเรียนรู้หลังการใช้เกม', 'Analysing what was learnt') + '</h4>' + tbq(DTXT.learn, cite8(['การวิเคราะห์ผลการเรียนรู้หลังการใช้เกม', 'analysing what was learnt'])));
+  function partA(mode, A) {
+    return '<h3>' + L('ก. หลังสถานการณ์ที่ 1 (คำถามสำหรับกลุ่มย่อย)', 'A. After scenario 1 (questions for each group)') + '</h3>' +
+      '<p>' + tx(DTXT.intro1) + (mode === 'web' ? ' <span class="small muted">(' + citeA10('1–7') + ')</span>' : '') + '</p>' +
+      '<ol class="dql">' + DQ1.map(function (q) { return qItem(q, mode, A); }).join('') + '</ol>' +
+      (mode === 'ans' ? '' : '<p class="small muted">' + L('ข้อ 8 ในตำรา (ทดลองแผนในโปรแกรม ReHab แล้วบันทึกผล): ใช้เครื่องนี้แทน ทำสถานการณ์ที่ 2 ในแท็บเตรียมเกม แล้วพิมพ์ผลจากแท็บใบบันทึก (ข้อความนี้เขียนขึ้นสำหรับเครื่องนี้)',
+        'Item 8 of the textbook (test the plan in the ReHab program and record the results): use this app instead — play scenario 2 from the Setup tab and print the results from the Record sheets tab (note written for this app).') + '</p>');
   }
-  // a quoted textbook text; raw = text already chosen by language
-  function tbq(o, cite, raw) { return '<blockquote class="tb">' + (raw ? o : tx(o)) + '<cite>' + cite + '</cite></blockquote>'; }
+  function partB(mode, A, brk) {
+    return '<h3' + (brk ? ' class="page-break"' : '') + '>' + L('ข. หลังเล่นเกม (ข้อ 9 ', 'B. After the game (item 9: ') + tx(DTXT.h9) + ')</h3>' +
+      (mode === 'web' ? '<p class="small muted">' + citeA10('9') + '</p>' : '') +
+      '<ol class="dql">' + DQ9.map(function (q) { return qItem(q, mode, A); }).join('') + '</ol>';
+  }
+  function teacherPart() {
+    return '<h4>' + L('การอภิปรายแลกเปลี่ยนเรียนรู้เพิ่มเติม', 'Further discussion') + '</h4>' + tbq(DTXT.disc, cite8(['การอภิปรายแลกเปลี่ยนเรียนรู้เพิ่มเติม', 'further discussion'])) +
+      '<h4>' + L('การสรุปผลการใช้เกม (debriefing)', 'Debriefing') + '</h4>' + tbq(DTXT.debrief, cite8(['การสรุปผลการใช้เกม', 'debriefing'])) +
+      tbq('<b>' + L('สถานการณ์จำลองที่ 1', 'Scenario 1') + '</b><br>' + tx(DTXT.s1), cite8(['สถานการณ์จำลองที่ 1', 'scenario 1']), true) +
+      tbq('<b>' + L('สถานการณ์จำลองที่ 2', 'Scenario 2') + '</b><br>' + tx(DTXT.s2), cite8(['สถานการณ์จำลองที่ 2', 'scenario 2']), true) +
+      '<h4>' + L('วิธีการอื่น ๆ ที่เป็นไปได้ในการจัดการทรัพยากรธรรมชาติในเกม', 'Other possible ways to manage the natural resources in the game') + '</h4>' +
+      tbq(tx(DTXT.alt) + '<ul>' + DTXT.altList.map(function (x) { return '<li>' + tx(x) + '</li>'; }).join('') + '</ul>', cite8(['วิธีการอื่น ๆ ที่เป็นไปได้', 'other possible ways']), true) +
+      '<p class="small muted">' + L('ทดลองแนวทางเหล่านี้ได้ในเครื่องนี้: ลดแรงงาน (กรอก 0 = อยู่บ้าน) แบ่งช่อง เขตอนุรักษ์และเขตกันชน และส่วนขยายในแท็บเตรียมเกม (ลาดตระเวน อาชีพเสริม ปลูกป่า) ส่วนการเพาะพันธุ์นกไม่มีในเครื่องนี้',
+        'Several of these can be tried in this app: less labour (type 0 = stays home), sharing cells, reserves and buffer zones, and the extensions in the Setup tab (patrols, side jobs, replanting). Bird breeding is not in this app.') + '</p>' +
+      '<h4>' + L('การวิเคราะห์ผลการเรียนรู้หลังการใช้เกม', 'Analysing what was learnt') + '</h4>' + tbq(DTXT.learn, cite8(['การวิเคราะห์ผลการเรียนรู้หลังการใช้เกม', 'analysing what was learnt']));
+  }
+  function playedLabel(p) { return ({ S1: L('สถานการณ์ที่ 1 → ตอบส่วน ก.', 'Scenario 1 → answer part A'), S2: L('สถานการณ์ที่ 2 → ตอบส่วน ข.', 'Scenario 2 → answer part B'), both: L('ทั้ง 2 สถานการณ์ → ตอบส่วน ก. และ ข.', 'Both scenarios → answer parts A and B') })[p]; }
+  function submitNote() {
+    return L('ตอบเฉพาะส่วนของสถานการณ์ที่กลุ่มเล่น (ส่วน ก. หลังสถานการณ์ที่ 1, ส่วน ข. หลังสถานการณ์ที่ 2) คำตอบบันทึกในเบราว์เซอร์นี้อัตโนมัติ เมื่อเสร็จแล้วกด <b>🖨 บันทึกคำตอบเป็น PDF</b> เลือก "บันทึกเป็น PDF" (Save as PDF) ในหน้าต่างพิมพ์ แล้วส่งไฟล์ PDF ในระบบ <b>MyCourseVille</b>',
+      'Answer only the part for the scenario your group played (part A after scenario 1, part B after scenario 2). Answers are saved in this browser automatically. When you finish, press <b>🖨 Save answers as PDF</b>, choose “Save as PDF” in the print window, and submit the PDF in <b>MyCourseVille</b>.');
+  }
+  function answerSheet(s) {
+    var A = answersOf(s), q = A.q, R = rows(s), sm = M.summary(s.params, R), d = new Date();
+    return '<h2>' + L('คำตอบคำถามอภิปราย · เกมป่าชุมชนกับนกหายาก', 'Discussion answers · Community Forest &amp; Rare Birds') + '</h2>' +
+      '<table class="hw"><tbody>' +
+      '<tr><td>' + L('กลุ่ม', 'Group') + '</td><td>' + (A.group ? esc(A.group) : '........................') + '</td></tr>' +
+      '<tr><td>' + L('สมาชิก', 'Members') + '</td><td>' + (A.members ? esc(A.members).replace(/\n/g, '<br>') : '........................') + '</td></tr>' +
+      '<tr><td>' + L('สถานการณ์ที่เล่น', 'Scenario played') + '</td><td>' + esc(playedLabel(A.played)) + '</td></tr>' +
+      '<tr><td>' + L('เกมในเครื่อง', 'Game in the app') + '</td><td>' + esc(s.title) + ' · ' + esc(SCEN(s.scenario)) + ' · ' + L('เล่นแล้ว ', 'played ') + R.length + '/' + s.params.years + L(' ปี', ' years') +
+        (R.length ? L(' · รายได้รวม ', ' · total income ') + fmt(sm.income) + L(' · ลูกนกรายปี ', ' · chicks per year ') + sm.chicksByYear.join(', ') + L(' · มวลชีวภาพ ', ' · biomass ') + sm.biomassStart + '→' + sm.biomassEnd : '') + '</td></tr>' +
+      '<tr><td>' + L('วันที่', 'Date') + '</td><td>' + d.toLocaleDateString(locale()) + '</td></tr></tbody></table>' +
+      (partOn(A, 'A') ? partA('ans', q) : '') + (partOn(A, 'B') ? partB('ans', q, partOn(A, 'A')) : '');
+  }
+  function printAnswers(s) {
+    var A = answersOf(s), old = document.title;
+    $('#printArea').innerHTML = '<section class="rulesp qsheet ansp">' + answerSheet(s) + '</section>';
+    var slug = (A.group || s.title || '').replace(/[^A-Za-z0-9-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 24);
+    document.title = 'W12_Discussion_answers' + (slug ? '_' + slug : '') + '_' + today();
+    setTimeout(function () { window.print(); setTimeout(function () { document.title = old; }, 500); }, 50);
+  }
+  function printBlank(s) {
+    $('#printArea').innerHTML = '<section class="rulesp qsheet"><h2>' + L('เกมป่าชุมชนกับนกหายาก: คำถามอภิปราย', 'Community Forest &amp; Rare Birds: discussion questions') + '</h2>' +
+      '<p>' + L('กลุ่ม ........................ สมาชิก ...................................................................................', 'Group ........................ Members ...................................................................................') + '</p>' +
+      partA('blank', {}) + partB('blank', {}, true) + '</section>';
+    setTimeout(function () { window.print(); }, 50);
+  }
   function renderDiscuss(P, s) {
-    P.innerHTML = '<div class="card howto"><div class="sect-h"><span></span><div class="actions"><button class="btn sm primary" id="bPrintQ">' + L('🖨 พิมพ์ใบงาน', '🖨 Print worksheet') + '</button></div></div>' + discussBody(s, false) + '</div>';
-    P.onclick = function (e) { if (e.target.closest('#bPrintQ')) { $('#printArea').innerHTML = '<section class="rulesp qsheet">' + discussBody(s, true) + '</section>'; setTimeout(function () { window.print(); }, 50); } };
+    var A = answersOf(s), q = A.q;
+    var skip = function (part) { return partOn(A, part) ? '' : '<div class="banner warn"><div>' + L('ไม่ต้องตอบส่วนนี้สำหรับสถานการณ์ที่เลือกไว้ (ไม่รวมในไฟล์ PDF)', 'No need to answer this part for the scenario you chose (not included in the PDF)') + '</div></div>'; };
+    P.innerHTML =
+      '<div class="card howto"><div class="sect-h"><h2 style="margin:0">' + L('คำถามอภิปราย', 'Discussion questions') + '</h2><div class="actions">' +
+      '<button class="btn sm primary" id="bPrintA">' + L('🖨 บันทึกคำตอบเป็น PDF', '🖨 Save answers as PDF') + '</button><button class="btn sm" id="bPrintQ">' + L('🖨 พิมพ์ใบงานเปล่า', '🖨 Print blank worksheet') + '</button></div></div>' +
+      '<div class="banner info"><div>' + submitNote() + '</div></div>' +
+      '<div class="pgrid"><div><label for="aGroup">' + L('กลุ่ม', 'Group') + '</label><input class="field" id="aGroup" value="' + esc(A.group) + '"></div>' +
+      '<div><label for="aMembers">' + L('สมาชิก (ชื่อหรือรหัสนิสิต ตามที่ผู้สอนกำหนด)', 'Members (names or student IDs, as your teacher asks)') + '</label><input class="field" id="aMembers" value="' + esc(A.members) + '"></div>' +
+      '<div><label for="aPlayed">' + L('สถานการณ์ที่กลุ่มเล่น', 'Scenario your group played') + '</label><select id="aPlayed">' + ['S1', 'S2', 'both'].map(function (k) { return '<option value="' + k + '"' + (A.played === k ? ' selected' : '') + '>' + esc(playedLabel(k)) + '</option>'; }).join('') + '</select></div></div>' +
+      '<p class="small muted" style="margin-top:.6rem">' + L('ข้อความคำถามยกจากตำรา 2303564 แบบจำลองเพื่อการจัดการทรัพยากรธรรมชาติ (ภาคผนวกที่ 10) ตามต้นฉบับ คำตอบเก็บไว้กับเกมที่เปิดอยู่ (', 'Questions from the textbook 2303564 Models for Natural Resource Management (appendix 10), translated into English for this app. Answers are kept with the open game (') + esc(s.title) + ')</p></div>' +
+      '<div class="card howto' + (partOn(A, 'A') ? '' : ' part-off') + '">' + skip('A') + partA('web', q) + '</div>' +
+      '<div class="card howto' + (partOn(A, 'B') ? '' : ' part-off') + '">' + skip('B') + partB('web', q) + '</div>' +
+      '<details class="card howto"><summary><b>' + L('ค. สำหรับผู้สอน: อภิปรายและสรุปการใช้เกม', 'C. For the teacher: discussion and debriefing') + '</b> <span class="small muted">' + L('(กดเพื่อเปิด)', '(click to open)') + '</span></summary>' + teacherPart() + '</details>' +
+      '<div class="actions" style="margin:.4rem 0 1rem"><button class="btn sm primary" id="bPrintA2">' + L('🖨 บันทึกคำตอบเป็น PDF', '🖨 Save answers as PDF') + '</button><button class="btn sm danger" id="bClearA">' + L('ล้างคำตอบทั้งหมด', 'Clear all answers') + '</button></div>';
+    P.oninput = function (e) {
+      var t = e.target;
+      if (t.dataset.ans) { q[t.dataset.ans] = t.value; save(); }
+      else if (t.id === 'aGroup') { A.group = t.value; save(); }
+      else if (t.id === 'aMembers') { A.members = t.value; save(); }
+    };
+    P.onchange = function (e) { if (e.target.id === 'aPlayed') { A.played = e.target.value; save(); render(); } };
+    P.onclick = function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.id === 'bPrintA' || b.id === 'bPrintA2') printAnswers(s);
+      else if (b.id === 'bPrintQ') printBlank(s);
+      else if (b.id === 'bClearA') { if (!confirmInline(b, L('ยืนยันล้างคำตอบ', 'Confirm clear'))) return; A.q = {}; A.group = ''; A.members = ''; save(); render(); }
+    };
+  }
+
+  /* ---------- 8. brief (สไลด์สรุป) ----------
+     The 8-slide brief deck made for PD (18 Oct 2026, claude.ai Slides artifact "ReHab Online"), shown in the
+     app as 1920×1080 slides scaled to the tab, in Thai or English. Thai slide texts were written for the app;
+     the textbook quotes are in the How to play and Discussion tabs. Printable, one slide per A4 landscape page. */
+  var BF = 'font-family:Nunito Sans, Verdana, sans-serif;', BD = 'font-family:Domine, Georgia, serif;';
+  var C = { dark: '#1F3A2B', light: '#F4F2EA', alt: '#E4ECDF', body: '#45544B', pale: '#C9D8CC', eye: '#9A5A12', amber: '#E9A23B', card: '#FBFAF5', green: '#2F7A3E' };
+  function bSec(bg, ink, extra, inner) { return '<div class="bslide" style="background:' + bg + ';color:' + ink + ';' + BF + 'padding:128px;' + extra + '">' + inner + '</div>'; }
+  function bEye(t, col) { return '<p style="font-size:28px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:' + (col || C.eye) + '">' + t + '</p>'; }
+  function bH2(t, size) { return '<h2 style="' + BD + 'font-size:' + (size || 72) + 'px;font-weight:700;line-height:1.15">' + t + '</h2>'; }
+  function bHead(eye, h, size) { return '<div style="display:flex;flex-direction:column;gap:24px">' + bEye(eye) + bH2(h, size) + '</div>'; }
+  function bCard(title, body, bg, border) {
+    return '<div style="display:flex;flex-direction:column;gap:14px;background:' + bg + ';padding:44px;border-radius:16px' + (border ? ';border:2px solid ' + C.pale : '') + '">' +
+      '<h3 style="' + BD + 'font-size:42px;font-weight:700">' + title + '</h3><p style="font-size:30px;line-height:1.45;color:' + C.body + '">' + body + '</p></div>';
+  }
+  function SLIDES() {
+    var start = M.DEFAULTS.start, cols = ['#EADFC8', '#B9D7A2', '#6FAF63', '#2F7A3E'];
+    var grid = start.map(function (v, i) {
+      var light = v === 3, nest = v >= 2;
+      return '<div style="background:' + cols[v] + ';border-radius:12px;padding:14px;display:flex;flex-direction:column;justify-content:space-between">' +
+        '<p style="font-size:28px;font-weight:700' + (light ? ';color:' + C.light : '') + '">' + (i + 1) + '</p>' +
+        (nest ? '<div style="width:36px;height:36px;border-radius:50%;background:' + C.amber + ';border:2px solid ' + (light ? C.light : C.dark) + '"></div>' : '') + '</div>';
+    }).join('');
+    function step(n, t, d, last) {
+      return '<div style="display:grid;grid-template-columns:88px 380px 1fr;gap:24px;align-items:center;padding:16px 0;border-top:2px solid ' + C.pale + (last ? ';border-bottom:2px solid ' + C.pale : '') + '">' +
+        '<p style="' + BD + 'font-size:48px;font-weight:700;color:' + C.green + '">' + n + '</p><p style="font-size:32px;font-weight:700">' + t + '</p><p style="font-size:28px;line-height:1.4;color:' + C.body + '">' + d + '</p></div>';
+    }
+    function goal(big, t) { return '<div style="display:flex;flex-direction:column;gap:6px;border-top:2px solid #3E5A48;padding-top:20px">' + (big ? '<p style="' + BD + 'font-size:64px;font-weight:700">' + big + '</p>' : '') + '<p style="font-size:30px;line-height:1.4;color:' + C.pale + '">' + t + '</p></div>'; }
+    var runRows = [[L('แบ่งบทบาท อธิบายกติกา', 'Assign roles, explain the rules'), 20], [L('สถานการณ์ที่ 1: 5 ปี ห้ามพูดคุย', 'Scenario 1: five years, no talking'), 40], [L('กลุ่มย่อยตอบคำถามข้อ 1–5', 'Groups answer questions 1–5'), 20],
+      [L('สถานการณ์ที่ 2: ตั้งเป้าหมาย วางแผน ทดสอบ', 'Scenario 2: set goals, plan, test'), 40], [L('เปรียบเทียบผลและสรุปการเรียนรู้', 'Compare results and debrief'), 30]];
+    return [
+      { html: bSec(C.dark, C.light, 'display:flex;flex-direction:column;justify-content:center;gap:40px',
+          bEye(L('เกมสวมบทบาทว่าด้วยป่า ผู้คน และนกหายาก', 'A role-playing game on forests, people and a rare bird'), C.amber) +
+          '<h1 style="' + BD + 'font-size:120px;font-weight:700;line-height:1.1">ReHab Online</h1>' +
+          '<p style="font-size:44px;color:' + C.pale + '">Community forest &amp; rare birds · เกมป่าชุมชนกับนกหายาก</p>' +
+          '<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:28px;color:' + C.pale + '">' + L('เล่นได้ทั้งภาษาไทยและอังกฤษ: tenrm.github.io/ReHab_modify', 'Play in Thai or English: tenrm.github.io/ReHab_modify') + '</p>'),
+        note: L('แนะนำเกมสั้น ๆ ก่อนให้นิสิตเล่น เว็บแอปใช้คอมพิวเตอร์ของผู้คุมเกมเครื่องเดียวและฉายขึ้นจอ', 'A short introduction to the game before students play it. The web app runs on one facilitator computer and is projected to the class.') },
+      { html: bSec(C.light, C.dark, 'display:flex;flex-direction:column;justify-content:space-between;gap:48px',
+          bHead(L('ทำไมต้องเล่น', 'Why play it'), L('คนที่พึ่งพาป่าเพื่อหาเลี้ยงชีพ จะช่วยให้นกหายากยังทำรังวางไข่ในป่านั้นได้หรือไม่', 'Can people who live off a forest also keep a rare bird breeding there?')) +
+          '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">' +
+          bCard(L('ความซับซ้อน', 'Complexity'), L('เข้าใจด้วยตนเองว่าระบบนิเวศ-สังคมซับซ้อนเพียงใด', 'Feel how complex a social-ecological system is, from the inside.'), C.alt) +
+          bCard(L('ผลย้อนกลับ', 'Feedback'), L('เห็นว่าการใช้ทรัพยากรเปลี่ยนภูมิทัศน์อย่างไร และส่งผลย้อนกลับต่อคนอย่างไร', 'See how resource use reshapes the landscape, and how that comes back to people.'), C.alt) +
+          bCard(L('การจัดการร่วม', 'Shared management'), L('ทดสอบว่าผู้ใช้ทรัพยากรตกลงกันเพื่ออนุรักษ์และจัดการร่วมกันได้หรือไม่', 'Test whether users can agree on how to conserve and manage it together.'), C.alt) + '</div>'),
+        note: L('แบบจำลองเพื่อนคู่คิด (ComMod): แบบจำลองเป็นเครื่องมือเรียนรู้ร่วมกัน ไม่ใช่เครื่องพยากรณ์ ภูมิทัศน์ที่เปลี่ยนไปเป็นคุณสมบัติที่เกิดขึ้นใหม่จากปฏิสัมพันธ์ของผู้เล่น', 'Companion modelling (ComMod): the model is a tool for shared learning, not a prediction machine. The changing landscape is an emergent property of the players’ interactions.') },
+      { html: bSec(C.light, C.dark, 'display:flex;flex-direction:column;gap:56px',
+          bHead(L('บทบาท', 'Roles'), L('ผู้เล่น 2 กลุ่ม กับผู้คุมเกม 1 คน', 'Two groups of players, one game master')) +
+          '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px">' +
+          bCard(L('เกษตรกร', 'Harvesters'), L('แรงงาน 20 คน ใน 5–20 ครัวเรือน แต่ละคนเลือกไปตัด 1 ช่อง หรืออยู่บ้าน รายได้ = มวลชีวภาพที่ตัดได้', '20 labour units in 5–20 households. Each unit picks one cell to cut, or stays home. Income = biomass cut.'), C.card, true) +
+          bCard(L('เจ้าหน้าที่อุทยาน', 'Park managers'), L('2–3 คน ตั้งแต่ปีที่ 2 ประกาศเขตอนุรักษ์ให้นกได้ไม่เกิน 3 ช่อง แต่ไม่มีอะไรบังคับ', '2–3 players. From year 2 they may announce up to 3 reserve cells for the bird. Nothing enforces them.'), C.card, true) +
+          bCard(L('ผู้คุมเกม', 'Game master'), L('กรอกตัวเลือกที่ทุกคนเขียนลงกระดาษในหน้าจอเดียว แล้วฉายผลให้ทั้งห้องดู', 'Types everyone’s written choices into one screen and projects the results to the class.'), C.card, true) + '</div>'),
+        note: L('เขตอนุรักษ์เป็นเพียงการประกาศ เกษตรกรยังเข้าไปตัดได้ และเครื่องนับเป็นการบุกรุก ส่วนขยาย (ลาดตระเวน อาชีพเสริม ปลูกป่า) ปิดไว้เป็นค่าเริ่มต้น', 'A reserve is only an announcement: harvesters can still cut there, and the app counts it as an intrusion. Optional extensions (patrols, side jobs, replanting) are off by default.') },
+      { html: bSec(C.alt, C.dark, 'display:grid;grid-template-columns:1fr 840px;gap:80px;align-items:center',
+          '<div style="display:flex;flex-direction:column;gap:32px">' + bEye(L('ภูมิทัศน์', 'The landscape')) + bH2(L('ป่า 20 ช่อง มวลชีวภาพรวม 30 หน่วย', '20 cells of forest, 30 units of biomass')) +
+          '<ul style="font-size:32px;line-height:1.5;color:' + C.body + '">' + L(['แต่ละช่องมีมวลชีวภาพ 0–3 (สีเข้ม = ต้นไม้มาก)', 'ทุกช่องที่มี 2 ขึ้นไปมีนก 1 คู่ลงทำรัง (จุดสีส้ม)', 'ทุกเกมเริ่มจากแผนที่เดียวกัน'],
+            ['Each cell holds biomass 0–3 (darker = more trees)', 'Every cell with 2 or more hosts one nesting pair (amber dot)', 'The same starting map is used in every game']).map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>' +
+          '<div style="display:grid;grid-template-columns:repeat(5, 156px);grid-template-rows:repeat(4, 156px);gap:15px">' + grid + '</div>'),
+        note: L('แผนที่เริ่มต้น (ภาพที่ 8.64 ในตำรา) รวม 30 หน่วย มี 10 ช่องที่มีตั้งแต่ 2 ขึ้นไป ปีที่ 1 จึงมีนกลงทำรัง 10 คู่', 'Starting map (textbook Fig. 8.64), 30 units in total. Ten cells have 2 or more, so ten pairs nest in year 1.') },
+      { html: bSec(C.light, C.dark, 'display:flex;flex-direction:column;gap:40px',
+          bHead(L('กติกา', 'The rules'), L('1 รอบ = 1 ปี มี 5 ขั้น', 'One round = one year, in five steps'), 64) + '<div style="display:flex;flex-direction:column">' +
+          step(1, L('นกลงทำรัง', 'Birds nest'), L('ทุกช่องที่มีมวลชีวภาพตั้งแต่ 2 ขึ้นไปมีนก 1 คู่', 'Every cell with biomass 2 or more hosts one pair.')) +
+          step(2, L('เขตอนุรักษ์', 'Reserves'), L('ตั้งแต่ปีที่ 2 เจ้าหน้าที่ประกาศได้ไม่เกิน 3 ช่อง', 'From year 2, park managers may announce up to 3 cells.')) +
+          step(3, L('เกษตรกรเลือกช่อง', 'Harvesters choose'), L('แรงงานแต่ละคนเขียนเลขช่อง (1–20) หรือ 0 = อยู่บ้าน', 'Each labour unit writes a cell (1–20), or 0 to stay home.')) +
+          step(4, L('การตัดและลูกนก', 'Harvest and chicks'), L('ช่องที่น้อยกว่า 3 คนที่จับฉลากได้คนแรกได้ทั้งหมด ช่องที่มี 3 คนแรกได้ 2 คนที่สองได้ 1 รังที่มีคนตัด นกไม่มีลูก ช่องรอบข้างที่เงียบเกิน 50% ได้ลูก 1 ตัว ตั้งแต่ 80% ได้ 2 ตัว',
+            'Below 3, the first person drawn takes it all; at 3, the first gets 2 and the second 1. A nest with a harvester fails; quiet neighbours over 50% give 1 chick, 80% or more give 2.')) +
+          step(5, L('ป่าเปลี่ยนแปลง', 'Forest changes'), L('มีคนตัด 1 คน: คงเดิม · 2 คนขึ้นไป: ลดลงคนละ 1 · ไม่มีคนตัด: ปีแรก +1 ปีที่สองคงเดิม จากนั้นลดปีละ 1', 'One harvester: unchanged. Two or more: minus one per person. Left alone: +1 the first year, unchanged the second, then −1 a year.'), true) + '</div>'),
+        note: L('ช่องรอบข้างคือ 8 ช่องรอบ ๆ รวมแนวทแยง (ช่องมุมมี 3 ช่องขอบมี 5) ป่าที่ไม่มีใครใช้เลยก็เสื่อมลงหลังพัก 2 ปี ซึ่งผู้เล่นมักแปลกใจ', 'Neighbours are the 8 surrounding cells, diagonals included (3 for a corner, 5 on an edge). Even an unused forest declines after two years of rest, which often surprises players.') },
+      { html: bSec(C.alt, C.dark, 'display:grid;grid-template-columns:1fr 1fr;gap:64px',
+          '<div style="display:flex;flex-direction:column;gap:32px">' + bEye(L('2 สถานการณ์ สถานการณ์ละ 5 ปี', 'Two scenarios, five years each')) + bH2(L('ป่าเดิม แต่ตัดสินใจต่างวิธี', 'Same forest, a different way of deciding'), 64) +
+          bCard(L('สถานการณ์ที่ 1 · ต่างคนต่างทำ', 'Scenario 1 · alone'), L('ห้ามพูดคุยกัน แต่ละครัวเรือนเขียนตัวเลือกลงกระดาษ', 'No talking. Each household writes its choices on paper.'), C.card) +
+          bCard(L('สถานการณ์ที่ 2 · ร่วมกันวางแผน', 'Scenario 2 · together'), L('ผู้เล่นพูดคุย วางแผน และเจรจาเขตอนุรักษ์ เพื่อไปสู่เป้าหมายร่วมกัน', 'Players talk, plan and negotiate reserves, aiming at shared goals.'), C.card) + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:24px;background:' + C.dark + ';color:' + C.light + ';padding:56px;border-radius:24px">' +
+          '<h3 style="' + BD + 'font-size:44px;font-weight:700;color:' + C.amber + '">' + L('เป้าหมายในสถานการณ์ที่ 2', 'Goals in scenario 2') + '</h3>' +
+          goal('≥ 85', L('หน่วย รายได้รวมใน 5 ปี', 'units of total income in 5 years')) + goal('≥ 2', L('ลูกนกทุกปี ตั้งแต่ปีที่ 1', 'chicks every year, from year 1')) +
+          goal('', L('และมวลชีวภาพยั่งยืน ช่องว่างรายได้ระหว่างครัวเรือนน้อยที่สุด', 'plus sustainable biomass and the smallest possible income gap between households')) + '</div>'),
+        note: L('เป้าหมายจากตำรา (ภาคผนวกที่ 10 ข้อ 6) เครื่องตรวจมวลชีวภาพว่าเมื่อจบไม่น้อยกว่าตอนเริ่ม และรายงานช่องว่างรายได้กับดัชนี Gini ไว้เทียบระหว่างกลุ่ม', 'Goals from the textbook (appendix 10, question 6). The app checks biomass as “not less at the end than at the start” and reports the income gap and Gini index for comparing groups.') },
+      { html: bSec(C.dark, C.light, 'display:flex;flex-direction:column;justify-content:center;gap:56px',
+          bEye(L('ผลที่มักเกิดขึ้น', 'What usually happens'), C.amber) + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:64px">' +
+          '<div style="display:flex;flex-direction:column;gap:20px;border-top:4px solid ' + C.amber + ';padding-top:32px"><h2 style="' + BD + 'font-size:56px;font-weight:700;line-height:1.15">' + L('ต่างคนต่างทำ ป่าเสื่อมลง', 'Alone, the forest runs down') + '</h2><p style="font-size:32px;line-height:1.45;color:' + C.pale + '">' +
+            L('ทรัพยากรเสื่อมโทรมเร็ว มีการบุกรุกเขตอนุรักษ์เพราะเกษตรกรต้องหารายได้ และช่องว่างรายได้กว้าง', 'Resources degrade fast, reserves are invaded because harvesters need income, and the income gap is wide.') + '</p></div>' +
+          '<div style="display:flex;flex-direction:column;gap:20px;border-top:4px solid #9FD08F;padding-top:32px"><h2 style="' + BD + 'font-size:56px;font-weight:700;line-height:1.15">' + L('เมื่อพูดคุยกัน ผลดีขึ้น', 'Talking, results improve') + '</h2><p style="font-size:32px;line-height:1.45;color:' + C.pale + '">' +
+            L('ผู้เล่นเข้าใจพลวัตของมวลชีวภาพและชีววิทยาของนก วางแผนร่วมกัน และลดช่องว่างรายได้', 'Players grasp the biomass dynamics and the bird’s biology, plan together, and narrow the income gap.') + '</p></div></div>' +
+          '<p style="font-size:30px;line-height:1.45;color:' + C.pale + '">' + L('แนวทางที่กลุ่มต่าง ๆ เคยลอง: ลดแรงงานลงครึ่งหนึ่ง แบ่งช่องกันอย่างเท่ากัน เขตกันชนรอบเขตอนุรักษ์ที่น้อยลง อนุรักษ์ช่องมุม ปลูกป่า อาชีพเสริม', 'Ideas groups have tried: halve the labour, share cells evenly, buffer zones around fewer reserves, protect corner cells, replant, side jobs.') + '</p>'),
+        note: L('สรุปจากการสรุปผลการใช้เกมในตำรา (บทที่ 8 หัวข้อ 8.4.3) สถานการณ์ที่ 2 บางครั้งบรรลุทุกเป้าหมาย บางครั้งไม่ ซึ่งเป็นประเด็นอภิปรายที่ดี', 'Summarised from the textbook’s debriefing (chapter 8.4.3). Scenario 2 sometimes meets all the goals and sometimes not, which is itself a good discussion point.') },
+      { html: bSec(C.light, C.dark, 'display:flex;flex-direction:column;gap:40px;padding-bottom:160px',
+          bHead(L('การจัดกิจกรรม', 'Running it'), L('1 คาบเรียน 2–3 ชั่วโมง', 'One class session of 2–3 hours'), 64) +
+          '<div style="display:grid;grid-template-columns:1fr 640px;gap:56px">' +
+          '<table class="btab" style="font-size:28px"><tr><th style="width:80%;text-align:left">' + L('ขั้น', 'Step') + '</th><th style="width:20%;text-align:right">' + L('นาที', 'Minutes') + '</th></tr>' +
+          runRows.map(function (r) { return '<tr><td>' + r[0] + '</td><td style="text-align:right">' + r[1] + '</td></tr>'; }).join('') + '</table>' +
+          '<div style="display:flex;flex-direction:column;gap:16px;background:' + C.alt + ';padding:40px;border-radius:16px"><h3 style="' + BD + 'font-size:40px;font-weight:700">' + L('เว็บแอป', 'The web app') + '</h3>' +
+          '<ul style="font-size:28px;line-height:1.45;color:' + C.body + '">' + L(['คอมพิวเตอร์ 1 เครื่องกับจอฉาย', 'สลับไทย/อังกฤษได้ในคลิกเดียว', 'พิมพ์กติกาและแบบบันทึกได้', 'พิมพ์คำตอบลงในเว็บ บันทึกเป็น PDF', 'บอทสำหรับทดลองก่อนเข้าชั้นเรียน'],
+            ['One computer and a projector', 'Thai / English at one click', 'Prints rules and record sheets', 'Answers typed in, saved as PDF', 'Bots for a trial run before class']).map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+          '<p style="font-size:28px;font-weight:700">tenrm.github.io/ReHab_modify</p></div></div>' +
+          '<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#5C6B62">' + L('กติกา: แบบจำลอง ReHab ของ C. Le Page และ A. Dray (CIRAD) เขียนใหม่ให้เล่นบนเว็บ · ข้อความ: ตำรา 2303564 ของ พงษ์ชัย ดำรงโรจน์วัฒนา บทที่ 8 และภาคผนวกที่ 10', 'Rules: ReHab model by C. Le Page &amp; A. Dray (CIRAD), reimplemented for the web · Texts: P. Dumrongrojwatthana, 2303564 textbook, ch. 8 and appendix 10') + '</p>'),
+        note: L('ข้อมูลเก็บในเบราว์เซอร์ที่ใช้เล่น หลังจบคาบให้ดาวน์โหลด CSV และไฟล์สำรอง JSON นิสิตพิมพ์คำตอบในแท็บคำถามอภิปราย แล้วบันทึกเป็น PDF ส่งใน MyCourseVille', 'Data stay in the browser used for playing, so download the CSV files and a JSON backup after class. Students type their answers in the Discussion tab and save them as a PDF for MyCourseVille.') }
+    ];
+  }
+  var briefAt = 0;
+  function fitBrief() {
+    var st = $('#bStage'); if (!st) return;
+    var k = Math.min(st.clientWidth / 1920, st.clientHeight / 1080), sl = st.querySelector('.bslide');
+    if (sl) { sl.style.transform = 'scale(' + k + ')'; sl.style.left = Math.max(0, (st.clientWidth - 1920 * k) / 2) + 'px'; sl.style.top = Math.max(0, (st.clientHeight - 1080 * k) / 2) + 'px'; }
+  }
+  W.addEventListener('resize', fitBrief);
+  document.addEventListener('fullscreenchange', function () { setTimeout(fitBrief, 50); });
+  document.addEventListener('keydown', function (e) {
+    if (!$('#bStage') || /INPUT|TEXTAREA|SELECT/.test((e.target || {}).tagName || '')) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goBrief(1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); goBrief(-1); }
+  });
+  function goBrief(d) {
+    var n = SLIDES().length; briefAt = Math.max(0, Math.min(n - 1, briefAt + d));
+    var st = $('#bStage'); if (!st) return; var sl = SLIDES()[briefAt];
+    st.innerHTML = sl.html; $('#bNote').textContent = sl.note; $('#bCount').textContent = (briefAt + 1) + ' / ' + n;
+    $('#bPrev').disabled = briefAt === 0; $('#bNext').disabled = briefAt === n - 1; fitBrief();
+  }
+  function renderBrief(P) {
+    P.innerHTML = '<div class="card"><div class="sect-h"><h3>' + L('สไลด์สรุปเกม (ReHab Online)', 'Brief slides (ReHab Online)') + '</h3><div class="actions">' +
+      '<button class="btn sm" id="bPrev">◀</button><span class="small" id="bCount" style="min-width:3.5rem;text-align:center"></span><button class="btn sm" id="bNext">▶</button>' +
+      '<button class="btn sm" id="bFull">' + L('เต็มจอ', 'Full screen') + '</button><button class="btn sm primary" id="bPrintS">' + L('🖨 พิมพ์สไลด์ / PDF', '🖨 Print slides / PDF') + '</button></div></div>' +
+      '<div class="bstage" id="bStage"></div><p class="small muted" style="margin-top:.6rem"><b>' + L('บันทึกผู้บรรยาย:', 'Speaker notes:') + '</b> <span id="bNote"></span></p>' +
+      '<p class="small muted">' + L('ใช้ปุ่ม ◀ ▶ หรือลูกศรบนแป้นพิมพ์เพื่อเปลี่ยนสไลด์', 'Use ◀ ▶ or the arrow keys to change slides') + '</p></div>';
+    goBrief(0);
+    P.onclick = function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      if (b.id === 'bPrev') goBrief(-1); else if (b.id === 'bNext') goBrief(1);
+      else if (b.id === 'bFull') { var st = $('#bStage'); if (st.requestFullscreen) st.requestFullscreen().catch(function () {}); }
+      else if (b.id === 'bPrintS') {
+        $('#printArea').innerHTML = SLIDES().map(function (x) { return '<div class="bprint"><div class="bprint-in">' + x.html + '</div></div>'; }).join('');
+        setTimeout(function () { window.print(); }, 300);
+      }
+    };
   }
 
   /* ---------- 7. how to play ----------
@@ -1359,6 +1596,7 @@ html[lang="en"] .sess.active .t b::after { content: "  • open"; }
       rows: function (x, R) { var m = M.summary(x.params, R); return [[x.title, x.scenario, m.years, m.income, m.gap, m.gini, m.chicks, m.chicksByYear.join(' '), m.biomassStart, m.biomassEnd, m.invaders, m.goal.income ? 1 : 0, m.goal.chicks ? 1 : 0, m.goal.biomass ? 1 : 0]]; } }
   ];
   function table(ex, list, th) { var t = [ex.head.map(function (h) { return th ? h[0] : h[1]; })]; list.forEach(function (x) { var R = rows(x); t = t.concat(ex.rows(x, R)); }); return t; }
+  function nAns(s) { var q = (s.answers && s.answers.q) || {}; return Object.keys(q).filter(function (k) { return String(q[k]).trim(); }).length; }
   function renderDownloads(P, s) {
     var th = (store.csvLang || LANG) !== 'en', has = s.inputs.length > 0;
     var same = store.order.map(function (k) { return store.sessions[k]; }).filter(function (x) { return x && x.inputs.length && x.title === s.title; });
@@ -1371,6 +1609,7 @@ html[lang="en"] .sess.active .t b::after { content: "  • open"; }
       (has ? '' : '<div class="banner warn">' + L('ยังไม่มีผล เล่นอย่างน้อย 1 ปีก่อน', 'No results yet; play at least one year') + '</div>') +
       '<table class="list"><thead><tr><th>' + L('ไฟล์', 'File') + '</th><th>' + L('เกมนี้', 'This game') + '</th><th>' + L('ทุกสถานการณ์ของ "', 'All scenarios of "') + esc(s.title) + '" (' + same.length + ')</th></tr></thead><tbody>' +
       EXPORTS.map(function (e) { return '<tr><td><b>' + esc(L(e.name[0], e.name[1])) + '</b><div class="small muted">' + esc(L(e.desc[0], e.desc[1])) + '</div></td><td><button class="btn sm primary" data-dl="' + e.id + '"' + (has ? '' : ' disabled') + '>⬇ CSV</button></td><td><button class="btn sm" data-dlall="' + e.id + '"' + (same.length ? '' : ' disabled') + '>' + L('⬇ CSV รวม', '⬇ CSV (all)') + '</button></td></tr>'; }).join('') +
+      '<tr><td><b>' + L('คำตอบคำถามอภิปราย (PDF)', 'Discussion answers (PDF)') + '</b><div class="small muted">' + L('คำตอบที่พิมพ์ในแท็บคำถามอภิปราย สำหรับส่งในระบบ MyCourseVille (เลือก "บันทึกเป็น PDF" ในหน้าต่างพิมพ์) · ตอบแล้ว ', 'Answers typed in the Discussion tab, for submitting in MyCourseVille (choose “Save as PDF” in the print window) · answered ') + nAns(s) + L(' ช่อง', ' fields') + '</div></td><td><button class="btn sm primary" id="dlAns">🖨 PDF</button></td><td><button class="btn sm" id="goDisc">' + L('ไปที่คำถามอภิปราย', 'Open Discussion') + '</button></td></tr>' +
       '<tr><td><b>' + L('ไฟล์สำรองทั้งเกม (JSON)', 'Full game backup (JSON)') + '</b><div class="small muted">' + L('เก็บไว้เปิดต่อหรือย้ายเครื่องด้วยปุ่ม ⬆ นำเข้า JSON ด้านบน', 'Keep it to continue later or move to another computer with ⬆ Import JSON at the top') + '</div></td><td><button class="btn sm" id="dlJson">⬇ JSON</button></td><td><button class="btn sm" id="dlJsonAll">' + L('⬇ JSON ทุกเกมในเครื่อง', '⬇ JSON (all games)') + '</button></td></tr></tbody></table></div>' +
       (prev.length > 1 ? '<div class="card"><div class="sect-h"><h3>' + L('ตัวอย่างข้อมูล', 'Data preview') + '</h3><div class="actions">' + EXPORTS.map(function (e) { return '<button class="btn sm' + (e.id === ex.id ? ' primary' : '') + '" data-prev="' + e.id + '">' + esc(L(e.name[0], e.name[1])) + '</button>'; }).join('') + '</div></div>' +
         '<div class="scroll-x"><table class="res"><thead><tr>' + prev[0].map(function (h) { return '<th>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
@@ -1384,6 +1623,8 @@ html[lang="en"] .sess.active .t b::after { content: "  • open"; }
         var name = fileBase(s, all ? 'all' : '') + '_' + ({ labour: 'labour-year', house: 'house-year', cell: 'cell-year', sum: 'summary' })[x.id] + '.csv';
         download(name, csvText(table(x, all ? same : [s], th)), 'text/csv;charset=utf-8'); toast(L('ดาวน์โหลด ', 'Downloaded ') + name);
       }
+      else if (b.id === 'dlAns') printAnswers(s);
+      else if (b.id === 'goDisc') { store.tab = 4; save(); render(); window.scrollTo(0, 0); }
       else if (b.id === 'dlJson') download(fileBase(s) + '.json', JSON.stringify(s, null, 1), 'application/json');
       else if (b.id === 'dlJsonAll') download('W12_all-games_' + today() + '.json', JSON.stringify(store, null, 1), 'application/json');
     };
