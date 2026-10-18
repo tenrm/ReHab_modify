@@ -1318,9 +1318,9 @@ details.card > summary { cursor: pointer; }
           step(1, L('นกลงทำรัง', 'Birds nest'), L('ทุกช่องที่มีมวลชีวภาพตั้งแต่ 2 ขึ้นไปมีนก 1 คู่', 'Every cell with biomass 2 or more hosts one pair.')) +
           step(2, L('เขตอนุรักษ์', 'Reserves'), L('ตั้งแต่ปีที่ 2 เจ้าหน้าที่ประกาศได้ไม่เกิน 3 ช่อง', 'From year 2, park managers may announce up to 3 cells.')) +
           step(3, L('เกษตรกรเลือกช่อง', 'Harvesters choose'), L('แรงงานแต่ละคนเขียนเลขช่อง (1–20) หรือ 0 = อยู่บ้าน', 'Each labour unit writes a cell (1–20), or 0 to stay home.')) +
-          step(4, L('การตัดและลูกนก', 'Harvest and chicks'), L('ช่องที่น้อยกว่า 3 คนที่จับฉลากได้คนแรกได้ทั้งหมด ช่องที่มี 3 คนแรกได้ 2 คนที่สองได้ 1 รังที่มีคนตัด นกไม่มีลูก ช่องรอบข้างที่เงียบเกิน 50% ได้ลูก 1 ตัว ตั้งแต่ 80% ได้ 2 ตัว',
-            'Below 3, the first person drawn takes it all; at 3, the first gets 2 and the second 1. A nest with a harvester fails; quiet neighbours over 50% give 1 chick, 80% or more give 2.')) +
-          step(5, L('ป่าเปลี่ยนแปลง', 'Forest changes'), L('มีคนตัด 1 คน: คงเดิม · 2 คนขึ้นไป: ลดลงคนละ 1 · ไม่มีคนตัด: ปีแรก +1 ปีที่สองคงเดิม จากนั้นลดปีละ 1', 'One harvester: unchanged. Two or more: minus one per person. Left alone: +1 the first year, unchanged the second, then −1 a year.'), true) + '</div>'),
+          step(4, L('การตัดและลูกนก', 'Harvest and chicks'), L('เกษตรกรส่งผลต่ออัตราการสืบพันธุ์ของนก (การรบกวนน้อยมาก = ลูกนกเกิด 2 ตัว, น้อย = 1 ตัว, มาก = ไม่มีลูกนกเกิด)',
+            'Havester(s) can affect the bird reproduction rate (very low = 2 newborns, low = 1 newborn, high = no newborn).')) +
+          step(5, L('ป่าเปลี่ยนแปลง', 'Forest changes'), L('มวลชีวภาพในแต่ละช่องเปลี่ยนแปลงตามการทดแทนตามธรรมชาติ และการรบกวนของมนุษย์จากการตัด', 'Biomass in each cell has dynamic based on natural succession and human disturbance by harvesting.'), true) + '</div>'),
         note: L('ช่องรอบข้างคือ 8 ช่องรอบ ๆ รวมแนวทแยง (ช่องมุมมี 3 ช่องขอบมี 5) ป่าที่ไม่มีใครใช้เลยก็เสื่อมลงหลังพัก 2 ปี ซึ่งผู้เล่นมักแปลกใจ', 'Neighbours are the 8 surrounding cells, diagonals included (3 for a corner, 5 on an edge). Even an unused forest declines after two years of rest, which often surprises players.') },
       { html: bSec(C.alt, C.dark, 'display:grid;grid-template-columns:1fr 1fr;gap:64px',
           '<div style="display:flex;flex-direction:column;gap:32px">' + bEye(L('2 สถานการณ์ สถานการณ์ละ 5 ปี', 'Two scenarios, five years each')) + bH2(L('ป่าเดิม แต่ตัดสินใจต่างวิธี', 'Same forest, a different way of deciding'), 64) +
